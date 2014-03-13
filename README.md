@@ -40,6 +40,12 @@ The default options are
       cached: false
     }
 
+
+## Todos
+- migrate old code to project
+- test old code
+
+
 ## Contributing
 
 1. Fork it ( http://github.com/DanielMSchmidt/dtv_tournaments/fork )
