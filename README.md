@@ -1,6 +1,6 @@
 # DtvTournaments
 
-A ruby gem for fetching tournaments from the dtv tournaments portal
+A ruby gem for fetching tournaments from the dtv tournaments portal. The gem only works with rails, because it's using the rails caching methods. Later on, they may be configured in a config file, so rails won't be necessary anymore.
 
 ## Installation
 
@@ -18,7 +18,7 @@ Or install it yourself as:
 
 ## Usage
 
-Just call ``Dtv_tournament.get_by_number(number, options={})`` and you will get a hash like this returned
+Just call ``DtvTournaments.get_by_number(number, options={})`` and you will get a hash like this returned
 
     {
       address: {
@@ -37,7 +37,8 @@ Just call ``Dtv_tournament.get_by_number(number, options={})`` and you will get 
 The default options are
 
     {
-      cached: false
+      cached: false, # If you want to get an uncached version but don't override the cached version
+      rerun: false # If you want to override the cache
     }
 
 
