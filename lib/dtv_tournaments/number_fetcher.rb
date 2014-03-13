@@ -36,17 +36,14 @@ module NumberFetcher
     mechanize = Mechanize.new { |agent|
       agent.read_timeout = 3
     }
-    begin
-      mechanize.get(NumberFetcher::FETCHINGURL)
-      search_form = mechanize.page.forms.last
 
-      search_form.nr = number
-      search_form.submit
+    mechanize.get(NumberFetcher::FETCHINGURL)
+    search_form = mechanize.page.forms.last
 
-      mechanize.page
-    rescue Mechanize::ResponseCodeError => e
-      puts "Error fetching the page: " + e
-    end
+    search_form.nr = number
+    search_form.submit
+
+    mechanize.page
   end
 
   def self.extract_results page
@@ -55,12 +52,15 @@ module NumberFetcher
     raw_data.each do |key, value|
       extracted_results[key] = send("extract_#{key}", value) unless value.nil?
     end
-    join_time_and_date extracted_results
+    create_time_and_date extracted_results
   end
 
-  def self.join_time_and_date hash
+  def self.create_time_and_date hash
     time = hash.delete(:time)
-    hash[:date] = DateTime.parse("#{hash.delete(:date)} #{time}")
+    date = hash.delete(:date)
+    hash[:datetime] = DateTime.parse("#{date} #{time}")
+    hash[:date]     = Date.parse(date)
+    hash[:time]     = Time.parse("#{date} #{time}")
     hash
   end
 
@@ -80,8 +80,16 @@ module NumberFetcher
     NumberFetcher::convert_to_text(content)
   end
 
-  def self.extract_address(content)
+  def self.extract_street(content)
     NumberFetcher::convert_to_text(content).split("\t").join("").split("\n").delete_if{|x| x.empty? }.join(" ")
+  end
+
+  def self.extract_zip(content)
+    content.text.gsub(/(\W)/, "").gsub(/(\D)/, "")
+  end
+
+  def self.extract_city(content)
+    content.text.gsub(/(\W)/, "").gsub(/(\d)/, "")
   end
 
   def self.convert_to_text(content)
@@ -112,8 +120,11 @@ module NumberFetcher
     end
     notes = page.search(".turniere tr .bemerkung").to_a.collect(&:text).reject{|x| x.nil? || x.empty?}.join("\n")
     date = page.search(".kategorie")
-    address = page.search(".ort")
-    { kind: kind, date: date, time: time, notes: notes, address: address }
+    street = page.search(".ort")
+    street.search("strong").remove # remove zip and city from field
+    zip = page.search(".ort strong")
+    city = page.search(".ort strong")
+    { kind: kind, date: date, time: time, notes: notes, street: street, zip: zip, city: city }
   end
 
   def self.get_subelement_if_available(element, selector)
@@ -124,3 +135,7 @@ module NumberFetcher
     end
   end
 end
+
+__END__
+
+DtvTournaments.get_by_number(38543)

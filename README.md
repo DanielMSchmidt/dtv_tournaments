@@ -21,11 +21,9 @@ Or install it yourself as:
 Just call ``DtvTournaments.get_by_number(number, options={})`` and you will get a hash like this returned
 
     {
-      address: {
-        zip: ...,
-        city: ...,
-        street: ...
-      },
+      zip: ...,
+      city: ...,
+      street: ...,
       number: ...,
       time: ...,
       date: ...,
