@@ -8,9 +8,9 @@ Gem::Specification.new do |spec|
   spec.version       = DtvTournaments::VERSION
   spec.authors       = ["Daniel Schmidt"]
   spec.email         = ["dschmidt@weluse.de"]
-  spec.summary       = %q{TODO: Write a short summary. Required.}
-  spec.description   = %q{TODO: Write a longer description. Optional.}
-  spec.homepage      = ""
+  spec.summary       = "A ruby gem for fetching tournaments from the dtv tournaments portal"
+  spec.description   = "This gem fetches the appsrv.tanzsport.de/dtv-webdbs/turnier/suche.spf portal and gives all available informations about the tournaments"
+  spec.homepage      = "https://github.com/DanielMSchmidt/dtv_tournaments"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
