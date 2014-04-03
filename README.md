@@ -41,8 +41,9 @@ The default options are
 
 
 ## Todos
-- migrate old code to project
+- refactor to be an object, with fetched values
 - test old code
+- fix that street and city is found by searching at the all tournaments page for the date and search there for the given number
 
 
 ## Contributing
