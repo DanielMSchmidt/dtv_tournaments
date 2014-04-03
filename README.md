@@ -1,4 +1,5 @@
 [![Build Status](https://drone.io/github.com/DanielMSchmidt/dtv_tournaments/status.png)](https://drone.io/github.com/DanielMSchmidt/dtv_tournaments/latest)
+[![Gem Version](https://badge.fury.io/rb/dtv_tournaments.svg)](http://badge.fury.io/rb/dtv_tournaments)
 
 # DtvTournaments
 
