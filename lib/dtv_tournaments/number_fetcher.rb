@@ -10,8 +10,6 @@ module NumberFetcher
     @rerun = options[:rerun] || false
     @cached = options[:cached] || false
 
-    # Rails.cache.delete("#{NumberFetcher::PREFIX}-#{@number}") if @rerun
-
     if @cached
       NumberFetcher::get_cached_tournament_data
     else
@@ -20,9 +18,7 @@ module NumberFetcher
   end
 
   def self.get_cached_tournament_data
-    #return Rails.cache.fetch("#{NumberFetcher::PREFIX}-#{@number}") do
     self.get_tournament_data
-    #end
   end
 
   def self.get_tournament_data
@@ -101,7 +97,7 @@ module NumberFetcher
   end
 
   def self.get_raw_data(page)
-    #Test id its a multiline tournament
+    # Check if it's a multiline tournament
     if page.search(".markierung .uhrzeit").first.text.empty?
       puts "This Tournament seems to be a big one: #{@number}"
 
