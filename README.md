@@ -1,3 +1,5 @@
+[![Build Status](https://drone.io/github.com/DanielMSchmidt/dtv_tournaments/status.png)](https://drone.io/github.com/DanielMSchmidt/dtv_tournaments/latest)
+
 # DtvTournaments
 
 A ruby gem for fetching tournaments from the dtv tournaments portal. The gem only works with rails, because it's using the rails caching methods. Later on, they may be configured in a config file, so rails won't be necessary anymore.
