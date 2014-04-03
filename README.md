@@ -20,32 +20,24 @@ Or install it yourself as:
 
 ## Usage
 
-Just call ``DtvTournaments.get_by_number(number, options={})`` and you will get a hash like this returned
+Call ``DtvTournaments::Tournament.new(number)`` to get an tournament instance with the the attributes
 
-    {
-      zip: ...,
-      city: ...,
-      street: ...,
-      number: ...,
-      time: ...,
-      date: ...,
-      datetime: ...,
-      kind: ...,
-      ageset: ...
-    }
+- number
+- date / time / datetime
+- street
+- zip
+- city
+- kind
+- notes
 
-The default options are
+It provides also the methods
 
-    {
-      cached: false, # If you want to get an uncached version but don't override the cached version
-      rerun: false # If you want to override the cache
-    }
+- rerun (to rerun the fetching process and update the cache)
 
 
 ## Todos
-- refactor to be an object, with fetched values
-- test old code
 - fix that street and city is found by searching at the all tournaments page for the date and search there for the given number
+- add tournament specific methods (is placing, get points, ...)
 
 
 ## Contributing

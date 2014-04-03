@@ -1,9 +1,16 @@
 require "dtv_tournaments/version"
-require "dtv_tournaments/number_fetcher"
+require "dtv_tournaments/tournament"
 
-# Proxy object
-module DtvTournaments
-  def self.get_by_number number, options={}
-    NumberFetcher.get_by_number number, options
+
+# Constants and helper
+module DTVTournaments
+  FETCHINGURL = "http://appsrv.tanzsport.de/td/db/turnier/einzel/suche"
+
+  def self.convertToText content
+    if content.class == String
+      content
+    else
+      content.text
+    end
   end
 end
