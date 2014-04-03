@@ -1,5 +1,5 @@
 require 'spec_helper'
-describe NumberFetcher do
+describe DTVTournaments::Tournament do
   describe "results" do
     describe "large tournaments" do
       it "should have the right date"
@@ -7,9 +7,21 @@ describe NumberFetcher do
       it "should have the right kind"
     end
     describe "small tournaments" do
-      it "should have the right date"
+      before(:all) do
+        @t = DTVTournaments::Tournament.new(38542)
+      end
+
+      it "should have the right date" do
+        expect(@t.date.to_s).to eq(Date.parse('29.03.2014').to_s)
+        expect(@t.time.hour).to eq(Time.parse('15:30').hour)
+        expect(@t.time.min).to eq(Time.parse('15:30').min)
+        expect(@t.datetime.to_s).to eq(DateTime.parse('29.03.2014 15:30').to_s)
+      end
+
       it "should have the right address"
-      it "should have the right kind"
+      it "should have the right kind" do
+        expect(@t.kind).to eq('HGR D ST')
+      end
     end
   end
 
