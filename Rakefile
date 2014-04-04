@@ -1,5 +1,5 @@
 require "bundler/gem_tasks"
-
+task :c => :console
 task :console do
   require 'irb'
   require 'irb/completion'
