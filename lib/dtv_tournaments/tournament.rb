@@ -12,7 +12,7 @@ module DTVTournaments
       call false
     end
 
-    def call cached=true
+    def call cached=  true
       # TODO: Support cached option later
       get_result_page
       extract_results
@@ -40,19 +40,7 @@ module DTVTournaments
     end
 
     def extract_kind
-      if @page.search(".markierung .uhrzeit").first.text.empty?
-        # This tournament is a big one
-        page.search(".turniere tr").each do |single_tournament|
-          next_kind = NumberFetcher::get_subelement_if_available(single_tournament, ".turnier")
-          kind = next_kind unless next_kind.nil? || next_kind.empty?
-
-          break if single_tournament.attributes().has_key?('class')
-        end
-      else
-        kind = page.search(".markierung .turnier")
-      end
-
-      @kind = DTVTournaments::convertToText(kind)
+      @kind = DTVTournaments::convertToText(page.search(".markierung .turnier"))
     end
 
     def extract_notes
@@ -66,21 +54,45 @@ module DTVTournaments
     def extract_time
       if page.search(".markierung .uhrzeit").first.text.empty?
         # This tournament is a big one
-        page.search(".turniere tr").each do |single_tournament|
-          next_time = NumberFetcher::get_subelement_if_available(single_tournament, ".uhrzeit")
-          time = next_time unless next_time.nil? || next_time.empty?
-
-          break if single_tournament.attributes().has_key?('class')
-        end
+        time = get_time_from_big_tournament(page.search(".turniere tr"))
       else
-        time = page.search(".markierung .uhrzeit")
+        time = page.search(".markierung .uhrzeit").text.scan(/\d{1,2}:\d{2}/).first
       end
-      date = DTVTournaments::convertToText(page.search(".kategorie")).scan(/^\d{1,2}.\d{1,2}.\d{4}/).first
-      time = DTVTournaments::convertToText(time).scan(/\d{1,2}:\d{2}/).first
+      date = page.search(".kategorie").text.scan(/^\d{1,2}.\d{1,2}.\d{4}/).first
+
+      puts time
 
       @datetime = DateTime.parse("#{date} #{time}")
       @date     = Date.parse(date)
       @time     = Time.parse("#{date} #{time}")
+    end
+
+    def get_index_of_marked_tournament tournaments
+      tournaments.each_with_index do |single_tournament, index|
+        return index if single_tournament.attributes().has_key?('class')
+      end
+    end
+
+    def get_first_time_until times, index
+        for i in (0..index).to_a.reverse
+          return times[i] unless times[i].nil? || times[i].empty?
+        end
+    end
+
+    def get_time_from_big_tournament tournaments
+
+      times = tournaments.map do |single_tournament|
+        next_time = DTVTournaments::get_subelement_if_available(single_tournament, ".uhrzeit")
+
+        if next_time.nil? || next_time.empty?
+          nil
+        else
+          next_time.scan(/\d{1,2}:\d{2}/).first
+        end
+      end
+
+      index = get_index_of_marked_tournament tournaments
+      get_first_time_until(times, index)
     end
   end
 end
