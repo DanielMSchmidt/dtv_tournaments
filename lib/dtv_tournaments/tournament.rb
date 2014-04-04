@@ -59,9 +59,10 @@ module DTVTournaments
         time = page.search(".markierung .uhrzeit").text.scan(/\d{1,2}:\d{2}/).first
       end
       date = page.search(".kategorie").text.scan(/^\d{1,2}.\d{1,2}.\d{4}/).first
+      parse_time date, time
+    end
 
-      puts time
-
+    def parse_time date, time
       @datetime = DateTime.parse("#{date} #{time}")
       @date     = Date.parse(date)
       @time     = Time.parse("#{date} #{time}")
