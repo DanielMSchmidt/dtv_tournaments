@@ -43,6 +43,11 @@ describe DTVTournaments::Tournament do
 
         DTVTournaments.get(38542)
       end
+
+      it "should fetch normally if not found in cache"
+      it "should save to cache if not found in cache"
+      it "should save to cache if rerun is set"
+      it "should not ask the cache if rerun is set"
     end
   end
 
