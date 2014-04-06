@@ -30,13 +30,11 @@ module DTVTournaments
 
     def getByNumber(number)
       data = @redis.get(number)
-      # TODO: Deserialize
-      data
+      Tournament.deserialize(data)
     end
 
     def setByNumber(number, tournament)
-      # TODO: Serialize
-      @redis.set(number, tournament)
+      @redis.set(number, tournament.serialize)
     end
   end
 end

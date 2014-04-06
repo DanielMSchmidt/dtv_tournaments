@@ -22,9 +22,9 @@ module DTVTournaments
   class Tournament
     attr_accessor :number, :notes, :date, :time, :datetime, :street, :zip, :city, :kind, :page
 
-    def initialize number
+    def initialize number, shouldCall=true
       @number = number
-      call
+      call if shouldCall
     end
 
     def call
@@ -113,10 +113,25 @@ module DTVTournaments
       index = get_index_of_marked_tournament tournaments
       get_first_time_until(times, index)
     end
+
+    def self.deserialize(data)
+      a = data.split('|')
+      datetime = a[2]
+
+      t = Tournament.new(a[0].to_i, false)
+      t.notes = a[1]
+      t.datetime = DateTime.parse(datetime)
+      t.time = Time.parse(datetime) - 60*60
+      t.date = Date.parse(datetime)
+      t.street = a[3]
+      t.zip = a[4]
+      t.city = a[5]
+      t.kind = a[6]
+      t
+    end
+
+    def serialize
+      "#{@number}|#{@notes}|#{@datetime.to_s}|#{@street}|#{@zip}|#{@city}|#{@kind}"
+    end
   end
 end
-
-
-__END__
-
-DTVTournaments.Tournament.new 38542
