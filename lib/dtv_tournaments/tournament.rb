@@ -1,43 +1,36 @@
 require 'mechanize'
 
 module DTVTournaments
+
+  def self.get number, rerun=false
+    if rerun
+      DTVTournaments::Tournament.new(number)
+    else
+      DTVTournaments.get_cache_tournament(number)
+    end
+  end
+
+  def self.get_cache_tournament(number)
+    cached = DTVTournaments.getCache.getByNumber(number)
+    if cached.nil?
+      DTVTournaments.get(number, true)
+    else
+      cached
+    end
+  end
+
   class Tournament
     attr_accessor :number, :notes, :date, :time, :datetime, :street, :zip, :city, :kind, :page
+
     def initialize number
       @number = number
       call
     end
 
-    def initializeByData(data)
-      @number = data[:number]
-      @notes = data[:notes]
-      @date = data[:date]
-      @time = data[:time]
-      @datetime = data[:datetime]
-      @street = data[:street]
-      @zip = data[:zip]
-      @city = data[:city]
-      @kind = data[:kind]
-    end
-
-    def rerun
-      call false
-    end
-
-    def call cached=true
-      if cached && get_cache_value
-      else
-        get_result_page
-        extract_results
-        save_to_cache
-      end
-
-    end
-
-    def get_cache_value
-      data = DTVTournaments.getCache.getByNumber(@number)
-      # TODO: Set data hash values to class values
-      nil
+    def call
+      get_result_page
+      extract_results
+      save_to_cache
     end
 
     def save_to_cache
