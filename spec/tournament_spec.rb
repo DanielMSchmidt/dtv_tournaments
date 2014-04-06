@@ -36,12 +36,29 @@ describe DTVTournaments::Tournament do
         expect(@t.kind).to eq('HGR D ST')
       end
     end
+
+    describe "caching" do
+      it "should ask the cache if tournament would be fetched" do
+        cache = double()
+        cache.should_receive(:getByNumber).and_return(nil)
+        DTVTournaments.stub(:getCache).and_return(cache)
+
+        DTVTournaments::Tournament.new(38542)
+      end
+    end
   end
 
   describe "options" do
-    it "should not take the cache if rerun is passed"
-    it "should update the cache if rerun is passed"
-    it "should not take cached if cached isn't passed"
-    it "should take the cached if cached is"
+    it "should be possible to configure a redis cache" do
+      DTVTournaments.configureCache do |config|
+        config[:host] = '10.0.1.42'
+        config[:port] = 6342
+        config[:db]   = 15
+      end
+      Redis.should_receive(:new).with(:host => "10.0.1.42", :port => 6342, :db => 15)
+
+      DTVTournaments::Cache.new
+      DTVTournaments.resetCacheConfig
+    end
   end
 end

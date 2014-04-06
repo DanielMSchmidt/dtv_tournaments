@@ -8,14 +8,40 @@ module DTVTournaments
       call
     end
 
+    def initializeByData(data)
+      @number = data[:number]
+      @notes = data[:notes]
+      @date = data[:date]
+      @time = data[:time]
+      @datetime = data[:datetime]
+      @street = data[:street]
+      @zip = data[:zip]
+      @city = data[:city]
+      @kind = data[:kind]
+    end
+
     def rerun
       call false
     end
 
-    def call cached=  true
-      # TODO: Support cached option later
-      get_result_page
-      extract_results
+    def call cached=true
+      if cached && get_cache_value
+      else
+        get_result_page
+        extract_results
+        save_to_cache
+      end
+
+    end
+
+    def get_cache_value
+      data = DTVTournaments.getCache.getByNumber(@number)
+      # TODO: Set data hash values to class values
+      nil
+    end
+
+    def save_to_cache
+      # TODO: Save self to cache
     end
 
     def get_result_page
@@ -81,7 +107,6 @@ module DTVTournaments
     end
 
     def get_time_from_big_tournament tournaments
-
       times = tournaments.map do |single_tournament|
         next_time = DTVTournaments::get_subelement_if_available(single_tournament, ".uhrzeit")
 
