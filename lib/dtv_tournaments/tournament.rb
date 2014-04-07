@@ -1,24 +1,6 @@
 require 'mechanize'
 
 module DTVTournaments
-
-  def self.get number, rerun=false
-    if rerun
-      DTVTournaments::Tournament.new(number)
-    else
-      DTVTournaments.get_cache_tournament(number)
-    end
-  end
-
-  def self.get_cache_tournament(number)
-    cached = DTVTournaments.getCache.getByNumber(number)
-    if cached.nil?
-      DTVTournaments.get(number, true)
-    else
-      cached
-    end
-  end
-
   class Tournament
     attr_accessor :number, :notes, :date, :time, :datetime, :street, :zip, :city, :kind, :page
 
