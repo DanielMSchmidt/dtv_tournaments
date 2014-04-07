@@ -39,7 +39,7 @@ describe DTVTournaments::Tournament do
 
     describe "caching" do
       it "should ask the cache if tournament would be fetched" do
-        DTVTournaments.should_receive(:get_cache_tournament).with(38542)
+        DTVTournaments.should_receive(:get_cached_tournament).with(38542)
 
         DTVTournaments.get(38542)
       end
@@ -53,7 +53,7 @@ describe DTVTournaments::Tournament do
 
   describe "options" do
     it "should be possible to configure a redis cache" do
-      DTVTournaments.configureCache do |config|
+      DTVTournaments.configure_cache do |config|
         config[:host] = '10.0.1.42'
         config[:port] = 6342
         config[:db]   = 15
@@ -61,7 +61,6 @@ describe DTVTournaments::Tournament do
       Redis.should_receive(:new).with(:host => "10.0.1.42", :port => 6342, :db => 15)
 
       DTVTournaments::Cache.new
-      DTVTournaments.resetCacheConfig
     end
   end
 end
