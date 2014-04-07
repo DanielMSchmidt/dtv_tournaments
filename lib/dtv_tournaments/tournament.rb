@@ -3,19 +3,20 @@ require 'mechanize'
 module DTVTournaments
   class Tournament
     attr_accessor :number, :notes, :date, :time, :datetime, :street, :zip, :city, :kind, :page
-    def initialize number
+
+    def initialize number, shouldCall=true
       @number = number
-      call
+      call if shouldCall
     end
 
-    def rerun
-      call false
-    end
-
-    def call cached=  true
-      # TODO: Support cached option later
+    def call
       get_result_page
       extract_results
+      save_to_cache
+    end
+
+    def save_to_cache
+      DTVTournaments.get_cache.set(self)
     end
 
     def get_result_page
@@ -81,7 +82,6 @@ module DTVTournaments
     end
 
     def get_time_from_big_tournament tournaments
-
       times = tournaments.map do |single_tournament|
         next_time = DTVTournaments::get_subelement_if_available(single_tournament, ".uhrzeit")
 
@@ -95,10 +95,25 @@ module DTVTournaments
       index = get_index_of_marked_tournament tournaments
       get_first_time_until(times, index)
     end
+
+    def self.deserialize(data)
+      a = data.split('|')
+      datetime = a[2]
+
+      t = Tournament.new(a[0].to_i, false)
+      t.notes = a[1]
+      t.datetime = DateTime.parse(datetime)
+      t.time = Time.parse(datetime) - 60*60
+      t.date = Date.parse(datetime)
+      t.street = a[3]
+      t.zip = a[4]
+      t.city = a[5]
+      t.kind = a[6]
+      t
+    end
+
+    def serialize
+      "#{@number}|#{@notes}|#{@datetime.to_s}|#{@street}|#{@zip}|#{@city}|#{@kind}"
+    end
   end
 end
-
-
-__END__
-
-DTVTournaments.Tournament.new 38542
