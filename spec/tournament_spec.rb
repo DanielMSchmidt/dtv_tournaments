@@ -3,7 +3,7 @@ describe DTVTournaments::Tournament do
   describe "results" do
     describe "large tournaments" do
       before(:all) do
-        @t = DTVTournaments::Tournament.new(40472)
+        @t = DTVTournaments.get(40472, true)
       end
 
       it "should have the right date" do
@@ -21,7 +21,7 @@ describe DTVTournaments::Tournament do
 
     describe "small tournaments" do
       before(:all) do
-        @t = DTVTournaments::Tournament.new(38542)
+        @t = DTVTournaments.get(38542, true)
       end
 
       it "should have the right date" do
@@ -36,12 +36,62 @@ describe DTVTournaments::Tournament do
         expect(@t.kind).to eq('HGR D ST')
       end
     end
+
+    describe "caching" do
+      it "should ask the cache if tournament would be fetched" do
+        DTVTournaments.should_receive(:get_cached_tournament).with(38542)
+
+        DTVTournaments.get(38542)
+      end
+
+      it "should fetch normally if not found in cache" do
+        cache = double('Cache', :get_by_number => nil)
+
+        DTVTournaments.should_receive(:get_cache).and_return(cache)
+        DTVTournaments::Tournament.should_receive(:new).with(38542)
+
+        DTVTournaments.get(38542)
+      end
+
+      it "should save to cache if not found in cache" do
+        cache = double('Cache', :get_by_number => nil)
+        cache.should_receive(:set)
+        DTVTournaments.should_receive(:get_cache).at_least(1).and_return(cache)
+
+        DTVTournaments.get(38542)
+      end
+
+      it "should save to cache if rerun is set" do
+        cache = double('Cache', :get_by_number => nil)
+        cache.should_receive(:set)
+        DTVTournaments.should_receive(:get_cache).and_return(cache)
+
+        DTVTournaments.get(38542, true)
+      end
+
+      it "should not ask the cache if rerun is set" do
+        cache = double('Cache', :set => nil)
+        cache.should_not_receive(:get_by_number)
+        DTVTournaments.should_receive(:get_cache).and_return(cache)
+
+        DTVTournaments.get(38542, true)
+      end
+    end
   end
 
   describe "options" do
-    it "should not take the cache if rerun is passed"
-    it "should update the cache if rerun is passed"
-    it "should not take cached if cached isn't passed"
-    it "should take the cached if cached is"
+    after(:each) do
+        DTVTournaments.reset_cache_config
+    end
+    it "should be possible to configure a redis cache" do
+      DTVTournaments.configure_cache do |config|
+        config[:host] = '10.0.1.42'
+        config[:port] = 6342
+        config[:db]   = 15
+      end
+      Redis.should_receive(:new).with(:host => "10.0.1.42", :port => 6342, :db => 15)
+
+      DTVTournaments::Cache.new
+    end
   end
 end
