@@ -44,14 +44,45 @@ describe DTVTournaments::Tournament do
         DTVTournaments.get(38542)
       end
 
-      it "should fetch normally if not found in cache"
-      it "should save to cache if not found in cache"
-      it "should save to cache if rerun is set"
-      it "should not ask the cache if rerun is set"
+      it "should fetch normally if not found in cache" do
+        cache = double('Cache', :get_by_number => nil)
+
+        DTVTournaments.should_receive(:get_cache).and_return(cache)
+        DTVTournaments::Tournament.should_receive(:new).with(38542)
+
+        DTVTournaments.get(38542)
+      end
+
+      it "should save to cache if not found in cache" do
+        cache = double('Cache', :get_by_number => nil)
+        cache.should_receive(:set)
+        DTVTournaments.should_receive(:get_cache).at_least(1).and_return(cache)
+
+        DTVTournaments.get(38542)
+      end
+
+      it "should save to cache if rerun is set" do
+        cache = double('Cache', :get_by_number => nil)
+        cache.should_receive(:set)
+        DTVTournaments.should_receive(:get_cache).and_return(cache)
+
+        DTVTournaments.get(38542, true)
+      end
+
+      it "should not ask the cache if rerun is set" do
+        cache = double('Cache', :set => nil)
+        cache.should_not_receive(:get_by_number)
+        DTVTournaments.should_receive(:get_cache).and_return(cache)
+
+        DTVTournaments.get(38542, true)
+      end
     end
   end
 
   describe "options" do
+    after(:each) do
+        DTVTournaments.reset_cache_config
+    end
     it "should be possible to configure a redis cache" do
       DTVTournaments.configure_cache do |config|
         config[:host] = '10.0.1.42'

@@ -16,7 +16,7 @@ module DTVTournaments
     end
 
     def save_to_cache
-      # TODO: Save self to cache
+      DTVTournaments.get_cache.set(self)
     end
 
     def get_result_page
