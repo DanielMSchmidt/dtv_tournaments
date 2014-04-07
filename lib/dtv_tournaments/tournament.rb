@@ -103,7 +103,7 @@ module DTVTournaments
       t = Tournament.new(a[0].to_i, false)
       t.notes = a[1]
       t.datetime = DateTime.parse(datetime)
-      t.time = Time.parse(datetime) - 60*60
+      t.time = Time.parse(datetime) - Time.zone_offset(Time.parse(datetime).zone)
       t.date = Date.parse(datetime)
       t.street = a[3]
       t.zip = a[4]
