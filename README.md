@@ -22,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-Call ``DtvTournaments::Tournament.new(number)`` to get an tournament instance with the the attributes
+Call ``DtvTournaments.get(number)`` to get an tournament instance with the the attributes
 
 - number
 - date / time / datetime
@@ -36,6 +36,17 @@ It provides also the methods
 
 - rerun (to rerun the fetching process and update the cache)
 
+### Caching
+  To configure caching do
+
+```ruby
+DTVTournaments.configure_cache do |config|
+  config[:active] = true
+  config[:host] = '10.0.1.42'
+  config[:port] = 6342
+  config[:db]   = 15
+end
+```
 
 ## Todos
 - fix that street and city is found by searching at the all tournaments page for the date and search there for the given number

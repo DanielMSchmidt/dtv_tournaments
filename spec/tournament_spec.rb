@@ -83,8 +83,14 @@ describe DTVTournaments::Tournament do
     after(:each) do
         DTVTournaments.reset_cache_config
     end
+
+    it "should have a deactivated cache" do
+      DTVTournaments.get_cache.redis.should be_nil
+    end
+
     it "should be possible to configure a redis cache" do
       DTVTournaments.configure_cache do |config|
+        config[:active] = true
         config[:host] = '10.0.1.42'
         config[:port] = 6342
         config[:db]   = 15

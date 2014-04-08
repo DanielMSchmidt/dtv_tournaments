@@ -11,7 +11,7 @@ module DTVTournaments
   end
 
   def self.reset_cache_config
-    @cache_configuration = {:host => '127.0.0.1', :port => 6379, :db => 1}
+    @cache_configuration = {:host => '127.0.0.1', :port => 6379, :db => 1, :active => false}
   end
 
   def self.configure_cache
@@ -25,17 +25,19 @@ module DTVTournaments
   class Cache < Struct.new(:redis)
     def initialize
       config = DTVTournaments.cache_configuration
-      @redis = Redis.new(config)
+      active = config.delete(:active)
+
+      @redis = Redis.new(config) if active
     end
 
     def get_by_number(number)
-      data = @redis.get(number)
+      data = @redis.get(number) unless @redis.nil?
       return nil if data.nil?
       Tournament.deserialize(data)
     end
 
     def set(tournament)
-      @redis.set(tournament.number, tournament.serialize)
+      @redis.set(tournament.number, tournament.serialize) unless @redis.nil?
     end
   end
 end

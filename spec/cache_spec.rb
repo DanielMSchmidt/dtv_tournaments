@@ -1,6 +1,10 @@
 require 'spec_helper'
 describe DTVTournaments::Cache do
   before(:all) do
+    DTVTournaments.configure_cache do |config|
+      config[:active] = true
+    end
+
     @cache = DTVTournaments.get_cache
   end
   it "should return the same as given in" do
