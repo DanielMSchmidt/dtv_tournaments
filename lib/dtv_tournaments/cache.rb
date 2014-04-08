@@ -33,7 +33,11 @@ module DTVTournaments
     def get_by_number(number)
       data = @redis.get(number) unless @redis.nil?
       return nil if data.nil?
-      Tournament.deserialize(data)
+      Tournament.deserialize(Cache.toDataArray(data))
+    end
+
+    def self.toDataArray(data)
+      data.split('|')
     end
 
     def set(tournament)

@@ -98,20 +98,21 @@ module DTVTournaments
       get_first_time_until(times, index)
     end
 
-    def self.deserialize(data)
-      a = data.split('|')
-      datetime = a[2]
-
+    def self.deserialize(a)
       t = Tournament.new(a[0].to_i, false)
       t.notes = a[1]
-      t.datetime = DateTime.parse(datetime)
-      t.time = Time.parse(datetime) - Time.zone_offset(Time.parse(datetime).zone)
-      t.date = Date.parse(datetime)
+      t.timeFromString(a[2])
       t.street = a[3]
       t.zip = a[4]
       t.city = a[5]
       t.kind = a[6]
       t
+    end
+
+    def timeFromString(datetime)
+      self.datetime = DateTime.parse(datetime)
+      self.time = Time.parse(datetime) - Time.zone_offset(Time.parse(datetime).zone)
+      self.date = Date.parse(datetime)
     end
 
     def serialize
