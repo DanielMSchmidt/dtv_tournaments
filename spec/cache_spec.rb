@@ -1,6 +1,6 @@
 require 'spec_helper'
 describe DTVTournaments::Cache do
-  before(:all) do
+  before(:each) do
     DTVTournaments.configure_cache do |config|
       config[:active] = true
     end
