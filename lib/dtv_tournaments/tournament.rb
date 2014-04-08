@@ -37,7 +37,7 @@ module DTVTournaments
       extract_kind
       extract_notes
       extract_location
-      extract_time
+      parse_time(extract_date, extract_time)
     end
 
     def extract_kind
@@ -55,12 +55,14 @@ module DTVTournaments
     def extract_time
       if page.search(".markierung .uhrzeit").first.text.empty?
         # This tournament is a big one
-        time = get_time_from_big_tournament(page.search(".turniere tr"))
+        get_time_from_big_tournament(page.search(".turniere tr"))
       else
-        time = page.search(".markierung .uhrzeit").text.scan(/\d{1,2}:\d{2}/).first
+        page.search(".markierung .uhrzeit").text.scan(/\d{1,2}:\d{2}/).first
       end
-      date = page.search(".kategorie").text.scan(/^\d{1,2}.\d{1,2}.\d{4}/).first
-      parse_time date, time
+    end
+
+    def extract_date
+      page.search(".kategorie").text.scan(/^\d{1,2}.\d{1,2}.\d{4}/).first
     end
 
     def parse_time date, time
