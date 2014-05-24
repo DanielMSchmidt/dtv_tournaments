@@ -38,7 +38,6 @@ It provides also the methods
 
 
 ## Todos
-- fix that street and city is found by searching at the all tournaments page for the date and search there for the given number
 - add tournament specific methods (is placing, get points, ...)
 
 
