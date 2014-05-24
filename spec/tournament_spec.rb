@@ -13,7 +13,12 @@ describe DTVTournaments::Tournament do
         expect(@t.datetime.to_s).to eq(DateTime.parse('20.04.2014 09:00').to_s)
       end
 
-      it "should have the right address"
+      it "should have the right address" do
+        expect(@t.zip).to eq(13629)
+        expect(@t.city).to eq('Berlin')
+        expect(@t.street).to include('Buolstr. 14')
+      end
+
       it "should have the right kind" do
         expect(@t.kind).to eq('HGR C LAT')
       end
@@ -31,7 +36,12 @@ describe DTVTournaments::Tournament do
         expect(@t.datetime.to_s).to eq(DateTime.parse('29.03.2014 15:30').to_s)
       end
 
-      it "should have the right address"
+      it "should have the right address" do
+        expect(@t.zip).to eq(21465)
+        expect(@t.city).to eq('Reinbek')
+        expect(@t.street).to include('Theodor-Storm-Str')
+      end
+
       it "should have the right kind" do
         expect(@t.kind).to eq('HGR D ST')
       end

@@ -49,7 +49,9 @@ module DTVTournaments
     end
 
     def extract_location
-      # TODO
+      @zip = @page.search('.ort strong').text.gsub!(/\D|\s/, "").to_i
+      @city = @page.search('.ort strong').text.gsub!(/\d|\s/, "")
+      @street = @page.search('.ort').to_html.split('<br>')[1].strip
     end
 
     def extract_time
